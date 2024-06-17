@@ -11,17 +11,39 @@ const CreateScreen = () => {
   const navigation = useNavigation();
 
   const handleSubmit = async (task) => {
-    const storedTasks = await AsyncStorage.getItem('tasks');
-    const tasks = storedTasks ? JSON.parse(storedTasks) : [];
-    task.id = Date.now().toString();
-    tasks.push(task);
-    await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
-    navigation.goBack();
-    Toast.show({
-      type: 'success',
-      text1: 'Task Created',
-      text2: 'The task has been successfully created.'
-    });
+    try {
+      const storedTasks = await AsyncStorage.getItem('tasks');
+      let tasks = [];
+
+      if (storedTasks) {
+        try {
+          tasks = JSON.parse(storedTasks);
+
+          if (!Array.isArray(tasks)) {
+            tasks = [];
+          }
+        } catch (error) {
+          tasks = [];
+        }
+      }
+
+      task.id = Date.now().toString();
+      const updatedTasks = [...tasks, task];
+      await AsyncStorage.setItem('tasks', JSON.stringify(updatedTasks));
+      navigation.goBack();
+      Toast.show({
+        type: 'success',
+        text1: 'Task Created',
+        text2: 'The task has been successfully created.'
+      });
+    } catch (error) {
+      console.error('Error creating task:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to create task. Please try again.'
+      });
+    }
   };
 
   return (

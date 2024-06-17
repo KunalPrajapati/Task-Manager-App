@@ -52,7 +52,7 @@ const TaskItem = ({ task, onPress, onDelete }) => {
       <SafeAreaView>
         <TouchableOpacity onPress={onPress}>
           <View style={styles.container}>
-            <Text style={styles.title}>{task.title}</Text>
+            <Text style={styles.title}>{task.title.slice(0, 30)}</Text>
             <Text style={styles.description}>{task.description.slice(0, 30) + '....'}</Text>
             <Text style={{ marginTop: 5, color: '#db393c' }}>Due Date: {task.dueDate.slice(0, 10)}</Text>
           </View>

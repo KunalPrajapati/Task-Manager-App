@@ -2,11 +2,12 @@
 /* eslint-disable prettier/prettier */
 
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+import { View, FlatList, TouchableOpacity, Text, StyleSheet, Image, BackHandler } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskItem from '../components/TaskItem';
 import notFoundImage from "../assets/notfound.png";
 import Toast from 'react-native-toast-message';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ListScreen = ({ navigation }) => {
     const [tasks, setTasks] = useState([]);
@@ -21,6 +22,20 @@ const ListScreen = ({ navigation }) => {
         const unsubscribe = navigation.addListener('focus', fetchTasks);
         return unsubscribe;
     }, [navigation]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const onBackPress = () => {
+                // Disable back button
+                return true;
+            };
+
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+            return () =>
+                BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, [])
+    );
 
     const handleCloseSwipe = () => {
         setOpenSwipeableId(null);
