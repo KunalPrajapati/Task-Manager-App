@@ -3,6 +3,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 const DetailScreen = ({ route, navigation }) => {
     const { task } = route.params;
@@ -12,10 +13,11 @@ const DetailScreen = ({ route, navigation }) => {
         const tasks = JSON.parse(storedTasks).filter(t => t.id !== task.id);
         await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
         navigation.goBack();
-    };
-
-    const handleEdit = () => {
-        navigation.navigate('EditTask', { task }); // Navigate to EditTask screen with task data
+        Toast.show({
+            type: 'success',
+            text1: 'Task Deleted',
+            text2: 'The task has been successfully deleted.'
+        });
     };
 
     return (
@@ -27,9 +29,6 @@ const DetailScreen = ({ route, navigation }) => {
             <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginTop: 20 }}>
                 <TouchableOpacity onPress={handleDelete} style={[styles.button, { backgroundColor: '#db393c' }]}>
                     <Text style={styles.buttonText}>Delete Task</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleEdit} style={[styles.button, { backgroundColor: '#000' }]}>
-                    <Text style={styles.buttonText}>Edit Task</Text>
                 </TouchableOpacity>
             </View>
         </View>
